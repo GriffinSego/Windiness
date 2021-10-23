@@ -1,0 +1,2 @@
+prototype: "/main/cloud.go"
+load_dynamically: false

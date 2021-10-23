@@ -1,0 +1,53 @@
+function init(self)
+	-- Add initialization code here
+	-- Remove this function if not needed
+	sound.play("#menu")
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Remove this function if not needed
+end
+function showScoreboard()
+	msg.post("/scoreboard", "enable")
+end
+function showPlayer()
+	msg.post("/player#script", "enable")
+end
+function on_message(self, message_id, message, sender)
+	print("ONMESSAGE GAMESCRIPT "..message_id)
+	if message_id == hash("youHaveTheBridge") then
+		print("1st in command")
+		msg.post("/username", "disable")
+		msg.post("#sprite", "play_animation", { id = hash("sky") } )
+		
+		msg.post(".", "acquire_input_focus")
+		go.set_position(vmath.vector3(10000, 10000, 0), "/username")
+	elseif message_id == hash("phazebg") then
+		if dbug then
+			showPlayer()
+			showScoreboard()
+			go.set("/cover#sprite", "tint.w", 0)
+		else
+			go.animate("/cover#sprite", "tint.w", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_INOUTSINE, 5)
+			--msg.post("/scoreboard", "enable")
+			timer.delay(3, false, showPlayer)
+			timer.delay(5, false, showScoreboard)
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Remove this function if not needed
+end

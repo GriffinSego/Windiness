@@ -1,0 +1,73 @@
+function init(self)
+	firstperson = "loading"
+	secondperson = "loading"
+	thirdperson = "loading"
+	fourthperson = "loading"
+
+	firstscore = 8
+	secondscore = 8
+	thirdscore = 8
+	fourthscore = 8
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Remove this function if not needed
+	gui.set_text(gui.get_node("score1"), firstscore.." - "..firstperson)
+	gui.set_text(gui.get_node("score2"), secondscore.." - "..secondperson)
+	gui.set_text(gui.get_node("score3"), thirdscore.." - "..thirdperson)
+	gui.set_text(gui.get_node("score4"), fourthscore.." - "..fourthperson)
+end
+
+function on_message(self, message_id, message, sender)
+	--pprint("workde")
+	--pprint(message)
+	if message_id == hash("set") then
+		firstperson = message.firstperson
+		firstscore = message.firstscore
+		secondperson = message.secondperson
+		secondscore = message.secondscore
+		thirdperson = message.thirdperson
+		thirdscore = message.thirdscore
+		fourthperson = message.fourthperson
+		fourthscore = message.fourthscore
+	elseif message_id == hash("disable") then
+		print("disabled scoreboard")
+		
+		gui.set_enabled(gui.get_node("box"), false)
+		gui.set_enabled(gui.get_node("title"), false)
+		gui.set_enabled(gui.get_node("score1"), false)
+		gui.set_enabled(gui.get_node("score2"), false)
+		gui.set_enabled(gui.get_node("score3"), false)
+		gui.set_enabled(gui.get_node("score4"), false)
+		
+	elseif message_id == hash("enable") then
+		print("enabled scoreboard")
+		gui.set_enabled(gui.get_node("box"), true)
+		gui.set_enabled(gui.get_node("title"), true)
+		gui.set_enabled(gui.get_node("score1"), true)
+		gui.set_enabled(gui.get_node("score2"), true)
+		gui.set_enabled(gui.get_node("score3"), true)
+		gui.set_enabled(gui.get_node("score4"), true)
+
+	end
+	-- Add message-handling code here
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+
+		
+	-- Add input-handling code here
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add input-handling code here
+	-- Remove this function if not needed
+end

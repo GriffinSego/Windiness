@@ -1,0 +1,68 @@
+function init(self)
+	msg.post(".", "acquire_input_focus") --get input
+	msg.post("@render:", "use_fixed_fit_projection", { near = -3, far = 3 })
+	headers = {} --empty http headers for POST req
+	scoresStr = "" --JSON scores
+	scoresTbl = {} --parsed (decoded) scores
+	msg.post("/scoreboard#scoreboard", "disable")
+	msg.post("/dirtblock", "disable")
+	
+	dbug = true 
+		local function steptwo()
+		print("step two")
+		msg.post(".", "release_input_focus")
+		msg.post("/username#username", "giveinputandfadein")
+	end
+	local function fadeout()
+		msg.post("/cloud_factory", "make", { position = vmath.vector3(640, 640, 0) } )
+		go.animate("/logo#logo", "tint.w", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_INOUTSINE, 1, 2)
+		timer.delay(3, false, steptwo)
+	end
+	go.set("/logo#logo", "tint.w", 0)
+	if dbug then
+		steptwo()
+	else
+		go.animate("/logo#logo", "tint.w", go.PLAYBACK_ONCE_FORWARD, 2, go.EASING_INOUTSINE, 1, 1, fadeout)--fadeout
+	end
+	function http_result(self, _, response)
+		--print("response "..response.response.." code "..response.status)
+		scoresStr = response.response
+		if(response.status == 200) then--activeIP = string.sub(response.response, 2, #response.response)
+			scoresTbl = json.decode(response.response)
+			msg.post("/scoreboard#scoreboard", "set", { firstperson = scoresTbl[1].user, firstscore = scoresTbl[1].score, secondperson = scoresTbl[2].user, secondscore = scoresTbl[2].score, thirdperson = scoresTbl[3].user, thirdscore = scoresTbl[3].score, fourthperson = scoresTbl[4].user, fourthscore = scoresTbl[4].score } )
+			--do_req()--in case timer.delay(true) fails
+		else
+			print("FETCH: HTTPERR"..response.status)
+			
+		end
+	end
+	function post_result(self, _, response)
+		print(response.status)
+		print("response "..response.response)--print(response.headers)--returns table
+		if(string.sub(response.response, 1, 1) == "$" and response.status == 200) then--activeIP = string.sub(response.response, 2, #response.response)
+			print(activeIP)
+			print("active IP assigned to "..string.sub(response.response, 2, #response.response))
+		else
+			print(response.response)
+			--do_req()
+		end
+	end
+	function do_req()
+		http.request("https://ScorespaceScoreboardServer.grify.repl.co/", "GET", http_result)
+	end
+	--local score = 10.18
+	timer.delay(1, true, do_req)
+	--http.request("https://ScorespaceScoreboardServer.grify.repl.co/", "POST", post_result, headers, "addscore|".."notgrify".."|"..score)
+	
+end
+
+function on_input(self, action_id, action)
+	--print("AAAAA")
+	if action_id == hash("click") and action.pressed then
+	elseif action_id == hash("text") then
+		print(action)
+		msg.post("/username#username", "text", { text = action } )
+	elseif action_id ~= nil then
+		pprint("action"..action_id)
+	end
+end

@@ -1,0 +1,32 @@
+function init(self)
+	math.randomseed(os.clock())
+	math.random(1, 2)
+	math.random(1, 2)
+	math.random(1, 2)
+end
+
+function generate()
+	local portal = math.random(7,10)
+	for i=1,portal do
+		print(i)
+		local type = math.random(1,4)--dirt, grass, stone, rock (circle stone)
+		local height = math.random(1,10)--blocks
+		factory.create("#"..tostring(type), vmath.vector3(640 + (i * 32), (height * 64), 0))
+		if height > 1 then
+			for j=1,height do
+				factory.create("#1", vmath.vector3(640 + (i * 32), (j * 32), 0))
+			end
+		end
+				
+		
+	end
+	portalcords = vmath.vector3(640 + (portal * 32) + (math.random(1, 2) * 32), 32 + (math.random(1, 2) * 32), 0)
+	print("portalcords"..portalcords.x)
+	factory.create("#5", portalcords)
+end
+
+function on_message(self, message_id, message)
+	if message_id == hash("generate") then
+		generate()
+	end
+end
